@@ -1,0 +1,30 @@
+.App {
+  text-align: center;
+}
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+.event-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 15px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.event-card button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
