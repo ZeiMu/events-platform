@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import NavBar from "./components/NavBar";
 import EventList from "./components/EventList";
-import dummydata from "./dummydata/events";
+import dummydata from "./dummydata/events.js";
 
 function App() {
   const [events] = useState(dummydata);
