@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
-const EventForm = () => {
+const EventForm = ({ addEvent }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -8,7 +8,8 @@ const EventForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Event created", { title, description, date, time });
+    const newEvent = { title, description, date, time };
+    addEvent(newEvent);
 
     setTitle("");
     setDescription("");
@@ -24,26 +25,30 @@ const EventForm = () => {
         placeholder="Event Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        required
       />
-      <br />{" "}
+
       <textarea
         placeholder="Event Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        required
       />
-      <br />{" "}
+
       <input
         type="date"
         value={date}
         onChange={(e) => setDate(e.target.value)}
-      />{" "}
-      <br />{" "}
+        required
+      />
+
       <input
         type="time"
         value={time}
         onChange={(e) => setTime(e.target.value)}
-      />{" "}
-      <br /> <button type="submit">Create Event</button>{" "}
+        required
+      />
+      <button type="submit">Create Event</button>
     </form>
   );
 };
