@@ -12,6 +12,7 @@ const CLIENT_ID =
 function App() {
   const [events, setEvents] = useState(dummydata);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [signUpEvents, setSignUpEvents] = useState([]);
 
   useEffect(() => {
     function start() {
@@ -33,9 +34,13 @@ function App() {
   };
 
   const handleAddToCalendar = (event) => {
+    if (!event || !event.title || !event.date || !event.time) {
+      console.error("Event is unavailable", event);
+      alert("Unable to add event to calendar");
+    }
     const eventDetails = {
       summary: event.title,
-      description: event.description,
+      description: event.description || "no description",
       start: {
         dateTime: new Date(`${event.date}T${event.time}`).toISOString(),
         timeZone: "BST",
@@ -59,6 +64,16 @@ function App() {
       });
   };
 
+  const handleSignUp = (event) => {
+    if (!signUpEvents.includes(event.id)) {
+      setSignUpEvents([...signUpEvents, event.id]);
+      alert(`Signed up for ${event.title}`);
+      handleAddToCalendar(event);
+    } else {
+      alert("You've signed up for this event");
+    }
+  };
+
   return (
     <Router>
       <div className="App">
@@ -68,7 +83,10 @@ function App() {
           <button onClick={handleLogin}>Login with Google</button>
         )}
         <Routes>
-          <Route path="/" element={<EventList events={events} />} />
+          <Route
+            path="/"
+            element={<EventList events={events} handleSignUp={handleSignUp} />}
+          />
           <Route
             path="/staffportal"
             element={
@@ -80,10 +98,11 @@ function App() {
                   }}
                 />
               ) : (
-                <p>Please Login to create events</p>
+                <p>Login to create events</p>
               )
             }
           />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
     </Router>

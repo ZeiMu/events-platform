@@ -21,7 +21,7 @@ const LoginPage = () => {
       {isLoggedIn ? (
         <p>Welcome Staff!</p>
       ) : (
-        <form onSubmit={handleLogin}>
+        <form on onSubmit={handleLogin}>
           <input
             type="email"
             placeholder="Staff Email"
