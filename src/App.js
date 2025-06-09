@@ -3,12 +3,13 @@ import NavBar from "./components/NavBar";
 import EventList from "./components/EventList";
 import EventForm from "./components/EventForm";
 import dummydata from "./dummydata/events.js";
-import LoginPage from "./pages/LoginPage.js";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { gapi } from "gapi-script";
+import "./App.css";
 
-const CLIENT_ID =
-  "621653517606-qkqvv9k0f8usc6viahqtdnp4focdt6pc.apps.googleusercontent.com";
+const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 function App() {
   const [events, setEvents] = useState(dummydata);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,14 +17,32 @@ function App() {
 
   useEffect(() => {
     function start() {
-      gapi.client.init({
-        clientId:
-          "621653517606-qkqvv9k0f8usc6viahqtdnp4focdt6pc.apps.googleusercontent.com",
-        scope: "https://www.googleapis.com/auth/calendar.events",
-      });
+      gapi.client
+        .init({
+          clientId: CLIENT_ID,
+          scope: "https://www.googleapis.com/auth/calendar.events",
+        })
+        .then(() => gapi.client.load("calendar", "v3"))
+        .then(() => {
+          console.log("Google Calendar Api");
+        })
+        .catch((error) => {
+          console.error("Error loading API", error);
+        });
     }
-    gapi.load("client:auth2", start);
+
+    gapi.load("client:auth2", () => {
+      console.log("Google API loaded");
+      start();
+    });
   }, []);
+
+  const STAFF_EMAIL = "staff@email.com"; // caps lock as value does not change
+  const STAFF_PASSWORD = "staffpassword";
+
+  const [staffEmail, setStaffEmail] = useState("");
+  const [staffPassword, setStaffPassword] = useState("");
+  const [isStaffLoggedIn, setIsStaffLoggedIn] = useState(false);
 
   const handleLogin = () => {
     const auth2 = gapi.auth2.getAuthInstance();
@@ -74,6 +93,16 @@ function App() {
     }
   };
 
+  const handleStaffLogin = (e) => {
+    e.preventDefault();
+    if (staffEmail === STAFF_EMAIL && staffPassword === STAFF_PASSWORD) {
+      setIsStaffLoggedIn(true);
+    } else {
+      alert(
+        "Incorrect staff login. email is staff@email.com and password is staffpassword"
+      );
+    }
+  };
   return (
     <Router>
       <div className="App">
@@ -90,19 +119,40 @@ function App() {
           <Route
             path="/staffportal"
             element={
-              isLoggedIn ? (
+              isStaffLoggedIn ? (
                 <EventForm
                   addEvent={(newEvent) => {
-                    setEvents([...events, newEvent]);
-                    handleAddToCalendar(newEvent);
+                    const eventWithId = { ...newEvent, id: Date.now() };
+                    setEvents([...events, eventWithId]);
+                    handleAddToCalendar(eventWithId);
                   }}
                 />
               ) : (
-                <p>Login to create events</p>
+                <form onSubmit={handleStaffLogin}>
+                  <h2>Staff Login</h2>
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={staffEmail}
+                    onChange={(e) => setStaffEmail(e.target.value)}
+                    required
+                  />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={staffPassword}
+                    onChange={(e) => setStaffPassword(e.target.value)}
+                    required
+                  />
+                  <button type="submit">login</button>
+                  <p>
+                    (HINT: email is staff@email.com and password is
+                    staffpassword)
+                  </p>
+                </form>
               )
             }
           />
-          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
     </Router>
