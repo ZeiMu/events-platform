@@ -18,6 +18,7 @@ Technical:
 React
 React-router
 Google Calendar API (limited to the test user which I have added in the Google Cloud console)
+Netlify
 
 Test account access details
 
@@ -46,6 +47,9 @@ Environmemnt Variable
 - Name this file .env
 - Paste the client id below into this file
   REACT_APP_GOOGLE_CLIENT_ID = 41453280321-ias4bpdnuhgqpj5nvv33r6u2umo33js6.apps.googleusercontent.com
+
+Netlify Live demo
+https:radiant-beignet-fe2425.netlify.app
 
 My personal details:
 
